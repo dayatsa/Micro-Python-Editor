@@ -3,21 +3,10 @@ from tkinter import filedialog
 
 
 class FileHandler:
-
-    def __init__(self):
-        self.__filename = None
-
-    
-    def get_filename(self):
-        return self.__filename
-
-
-    def new_file(self, *args):
-        self.__filename = None
  
-
-    def open_file(self, *args):
-        self.__filename = filedialog.askopenfilename(
+    @staticmethod
+    def open_file():
+        filename = filedialog.askopenfilename(
             defaultextension=".py",
             filetypes=[("Python Scripts", "*.py"),
                        ("All Files", "*.*"),
@@ -26,19 +15,20 @@ class FileHandler:
                        ("JavaScript Files", "*.js"),
                        ("HTML Documents", "*.html"),
                        ("CSS Documents", "*.css")])
-        if self.__filename:
+        if filename:
             data = ""
-            with open(self.__filename, "r") as f:
+            with open(filename, "r") as f:
                 data = f.read()
-            return data
+            return filename, data
         else:
-            return None
+            return None, None
  
 
-    def save(self, content):
+    @staticmethod
+    def save(filename, content):
         res = False
         try:
-            with open(self.__filename, "w") as f:
+            with open(filename, "w") as f:
                 f.write(content)
             res = True
         except Exception as e:
@@ -46,10 +36,11 @@ class FileHandler:
         return res
  
 
-    def save_as(self, content):
-        res = False
+    @staticmethod
+    def save_as(content):
+        res = (False, "None")
         try:
-            new_file = filedialog.asksaveasfilename(
+            new_filename = filedialog.asksaveasfilename(
                 initialfile="Untitled.py",
                 defaultextension=".py",
                 filetypes=[("Python Scripts", "*.py"),
@@ -59,10 +50,9 @@ class FileHandler:
                         ("JavaScript Files", "*.js"),
                         ("HTML Documents", "*.html"),
                         ("CSS Documents", "*.css")])
-            with open(new_file, "w") as f:
+            with open(new_filename, "w") as f:
                 f.write(content)
-            self.__filename = new_file
-            res = True
+            res = (True, new_filename)
         except Exception as e:
             print(e)
         return res
