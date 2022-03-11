@@ -1,7 +1,13 @@
-import tkinter as tk 
+import tkinter as tk
+from handler.LibraryHandler import LibraryHandler 
 from model.CodeModel import *
 from controller.CodeController import *
 from view.CodeView import *
+from pathlib import Path
+import os
+
+
+OUTPUT_PATH = Path(__file__).parent
 
 
 class App(tk.Tk):
@@ -11,7 +17,11 @@ class App(tk.Tk):
         self.title('Micro Python Editor')
 
         # create a model
-        model = CodeModel("None")
+        path = os.path.join(OUTPUT_PATH, "micropython_lib")
+        lib = LibraryHandler.get_library_code(path)
+        path_code = os.path.join(OUTPUT_PATH, "res")
+        FileHandler.check_directory_path(path_code)
+        model = CodeModel(header=lib, code="None", path_lib=path_code)
 
         # create a view and place it on the root window
         view = CodeView(self)

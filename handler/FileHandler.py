@@ -25,6 +25,17 @@ class FileHandler:
  
 
     @staticmethod
+    def open_file_with_name(filename):
+        if filename:
+            data = ""
+            with open(filename, "r") as f:
+                data = f.read()
+            return data
+        else:
+            return None
+
+
+    @staticmethod
     def save(filename, content):
         res = False
         try:
@@ -56,3 +67,15 @@ class FileHandler:
         except Exception as e:
             print(e)
         return res
+
+
+    @staticmethod
+    def check_directory_path(dir_path):
+        isExist = os.path.exists(dir_path)
+
+        if not isExist:
+            # Create a new directory because it does not exist 
+            os.makedirs(dir_path)
+            print("The new directory is created!")
+        else:
+            print("Directory exist")

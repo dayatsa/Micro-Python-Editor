@@ -1,5 +1,6 @@
-from fileinput import filename
 import tkinter as tk
+import time
+from fileinput import filename
 from handler.FileHandler import *
 from handler.SerialHandler import *
 
@@ -9,9 +10,6 @@ class CodeController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
-        
-        # variable view
-
 
 
     def new_file(self, *args):
@@ -53,16 +51,28 @@ class CodeController:
             self.model.set_filename(filename)
             self.set_window_title(self.model.get_filename())
 
+    
+    def save_main_code(self, *args):
+        if os.path.exists(self.model.get_path_main_code()):
+            os.remove(self.model.get_path_main_code())
+            print("Delete the file")
+        else:
+            print("Can not delete the file as it doesn't exists")
+        self.model.set_code(self.view.textarea.get(1.0, tk.END))
+        res = FileHandler.save(self.model.get_path_main_code(), self.model.get_full_code())
+        return res
+
 
     def run_code(self, *args):
         self.save()
+        self.save_main_code()
 
-        self.view.statusbar.update_status("Running Code..")
-        # print("running on " + self.variable_com.get())
-        # self.terminal.run_command("ampy --port " + self.variable_com.get() + " put " + str(self.filename))       
-        # self.terminal.clear()
+        # self.view.statusbar.update_status("Running Code..")
+        # print("running on " + self.view.variable_com.get())
+        # self.view.terminal.run_command("ampy --port " + self.view.variable_com.get() + " put " + str(self.model.get_path_main_code()))       
+        # self.view.terminal.clear()
         # time.sleep(0.1)
-        # self.terminal.run_command("ampy --port " + self.variable_com.get() + " run " + str(self.file_handler.get_filename()))
+        # self.view.terminal.run_command("ampy --port " + self.view.variable_com.get() + " run " + str(self.model.get_path_main_code()))
  
 
     def stop_run(self):
