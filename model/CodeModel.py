@@ -1,13 +1,19 @@
 import os
+from re import template
 
 
 class CodeModel:
 
-    def __init__(self, header, code, path_lib):
+    def __init__(self, header, path_lib, template):
         self.__header_code = header
-        self.__code = code
+        self.__code = template
         self.__filename = None
         self.__path_lib = path_lib
+        self.__template = template
+
+
+    def reset_code(self):
+        self.__code = self.__template
 
 
     # setter 

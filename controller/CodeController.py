@@ -10,15 +10,18 @@ class CodeController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+        self.new_file()
 
 
     def new_file(self, *args):
         # clear model
         self.model.set_filename(None)
-        self.model.set_code("")
+        self.model.reset_code()
         # clear view
         self.view.textarea.delete(1.0, tk.END)
+        self.view.textarea.insert(1.0, self.model.get_code())
         self.view.set_window_title()
+        print("Create new file")
  
 
     def open_file(self, *args):
@@ -49,7 +52,7 @@ class CodeController:
         if res:
             self.view.statusbar.update_status(True)
             self.model.set_filename(filename)
-            self.set_window_title(self.model.get_filename())
+            self.view.set_window_title(self.model.get_filename())
 
     
     def save_main_code(self, *args):
@@ -67,18 +70,21 @@ class CodeController:
         self.save()
         self.save_main_code()
 
-        # self.view.statusbar.update_status("Running Code..")
-        # print("running on " + self.view.variable_com.get())
+        self.view.statusbar.update_status("Running Code..")
+        print("running on " + self.view.variable_com.get())
+        print(str(self.model.get_path_main_code()))
         # self.view.terminal.run_command("ampy --port " + self.view.variable_com.get() + " put " + str(self.model.get_path_main_code()))       
-        # self.view.terminal.clear()
+        # print(self.view.terminal.get_output())
         # time.sleep(0.1)
-        # self.view.terminal.run_command("ampy --port " + self.view.variable_com.get() + " run " + str(self.model.get_path_main_code()))
+        self.view.terminal.clear()
+        time.sleep(0.1)
+        self.view.terminal.run_command("ampy --port " + self.view.variable_com.get() + " run " + str(self.model.get_filename()))
  
 
     def stop_run(self):
         print("stop running")
         try:
-            self.terminal.run_command('taskkill /IM "ampy.exe" /F')
+            self.view.terminal.run_command('taskkill /IM "ampy.exe" /F')
         except Exception as e:
             print(e)
 

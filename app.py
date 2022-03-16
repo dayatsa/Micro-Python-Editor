@@ -16,16 +16,24 @@ class App(tk.Tk):
 
         self.title('Micro Python Editor')
 
-        # create a model
+        # setting path
         path = os.path.join(OUTPUT_PATH, "micropython_lib")
-        lib = LibraryHandler.get_library_code(path)
         path_code = os.path.join(OUTPUT_PATH, "res")
+        
+        # get code on library
+        lib = LibraryHandler.get_library_code(os.path.join(path, "micropython"))
+        template = LibraryHandler.get_template_code(os.path.join(path, "template.py"))
+        
+        # check path directory
         FileHandler.check_directory_path(path_code)
-        model = CodeModel(header=lib, code="None", path_lib=path_code)
+        
+        # create a model        
+        model = CodeModel(header=lib, 
+                        path_lib=path_code,
+                        template=template)
 
         # create a view and place it on the root window
         view = CodeView(self)
-        # view.grid(row=0, column=0, padx=10, pady=10)
 
         # create a controller
         controller = CodeController(model, view)

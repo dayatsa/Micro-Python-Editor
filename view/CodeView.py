@@ -193,7 +193,7 @@ class CodeView(tk.Frame):
         )
         # option list COM
         self.variable_com = tk.StringVar(self.root)
-        self.list_com = tk.OptionMenu(self.root, self.variable_com, SerialHandler.get_list_ports())
+        self.list_com = tk.OptionMenu(self.root, self.variable_com, *SerialHandler.get_list_ports())
         self.list_com.place(
             x=1000,
             y=40,
@@ -264,7 +264,7 @@ class CodeView(tk.Frame):
 
     def button_stop_clicked(self):
         if self.controller:
-            self.controller.save()
+            self.controller.stop_run()
 
 
     def bind_shortcuts(self):
