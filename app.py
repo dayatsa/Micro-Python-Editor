@@ -1,4 +1,5 @@
 import tkinter as tk
+from ttkthemes import ThemedTk
 from handler.LibraryHandler import LibraryHandler 
 from model.CodeModel import *
 from controller.CodeController import *
@@ -36,10 +37,10 @@ class App(tk.Tk):
         view = CodeView(self)
 
         # create a controller
-        controller = CodeController(model, view)
+        # controller = CodeController(model, view)
 
         # set the controller to view
-        view.set_controller(controller)
+        # view.set_controller(controller)
 
 
 if __name__ == '__main__':

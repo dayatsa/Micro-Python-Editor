@@ -78,7 +78,7 @@ class CodeController:
         # time.sleep(0.1)
         self.view.terminal.clear()
         time.sleep(0.1)
-        self.view.terminal.run_command("ampy --port " + self.view.variable_com.get() + " run " + str(self.model.get_filename()))
+        self.view.terminal.run_command("ampy --port " + self.view.variable_com.get() + " run " + str(self.model.get_path_main_code()))
  
 
     def stop_run(self):
