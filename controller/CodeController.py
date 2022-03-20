@@ -1,5 +1,6 @@
 import tkinter as tk
 import time
+import os
 from fileinput import filename
 from handler.FileHandler import *
 from handler.SerialHandler import *
@@ -18,9 +19,10 @@ class CodeController:
         self.model.set_filename(None)
         self.model.reset_code()
         # clear view
-        self.view.textarea.delete(1.0, tk.END)
-        self.view.textarea.insert(1.0, self.model.get_code())
+        self.view.reset_content_textarea()
+        self.view.set_content_textarea(self.model.get_code())
         self.view.set_window_title()
+        self.view.set_statusbar("Success creating new file!")
         print("Create new file")
  
 
@@ -31,26 +33,40 @@ class CodeController:
             self.model.set_filename(filename)
             self.model.set_code(data)
             # set view
-            self.view.textarea.delete(1.0, tk.END)
-            self.view.textarea.insert(1.0, self.model.get_code())
+            self.view.reset_content_textarea()
+            self.view.set_content_textarea(self.model.get_code())
             self.view.set_window_title(self.model.get_filename())
+            self.view.set_statusbar("Success open " + self.model.get_filename())
  
+    
+    def open_file_with_name(self, path, filename):
+        data = FileHandler.open_file_with_name(os.path.join(path, filename))
+        if data is not None:
+            # set model
+            self.model.set_filename(None)
+            self.model.set_code(data)
+            # set view
+            self.view.reset_content_textarea()
+            self.view.set_content_textarea(self.model.get_code())
+            self.view.set_window_title()
+            self.view.set_statusbar("Success open " + filename)
+
 
     def save(self, *args):
-        self.model.set_code(self.view.textarea.get(1.0, tk.END))
+        self.model.set_code(self.view.get_content_textarea())
         res = FileHandler.save(self.model.get_filename(), self.model.get_code())
         if res:
-            self.view.statusbar.update_status(True)
+            self.view.set_statusbar(True)
             self.view.set_window_title(self.model.get_filename())
         else:
             self.save_as()
  
 
     def save_as(self, *args):
-        self.model.set_code(self.view.textarea.get(1.0, tk.END))
+        self.model.set_code(self.view.get_content_textarea())
         res, filename = FileHandler.save_as(self.model.get_code())
         if res:
-            self.view.statusbar.update_status(True)
+            self.view.set_statusbar(True)
             self.model.set_filename(filename)
             self.view.set_window_title(self.model.get_filename())
 
@@ -61,7 +77,7 @@ class CodeController:
             print("Delete the file")
         else:
             print("Can not delete the file as it doesn't exists")
-        self.model.set_code(self.view.textarea.get(1.0, tk.END))
+        self.model.set_code(self.view.get_content_textarea())
         res = FileHandler.save(self.model.get_path_main_code(), self.model.get_full_code())
         return res
 
@@ -70,16 +86,27 @@ class CodeController:
         self.save()
         self.save_main_code()
 
-        self.view.statusbar.update_status("Running Code..")
-        print("running on " + self.view.variable_com.get())
+        self.view.set_statusbar("Running Code..")
+        print("running on " + self.view.get_port_selected() + " port")
         print(str(self.model.get_path_main_code()))
         # self.view.terminal.run_command("ampy --port " + self.view.variable_com.get() + " put " + str(self.model.get_path_main_code()))       
         # print(self.view.terminal.get_output())
         # time.sleep(0.1)
         self.view.terminal.clear()
         time.sleep(0.1)
-        self.view.terminal.run_command("ampy --port " + self.view.variable_com.get() + " run " + str(self.model.get_path_main_code()))
+        self.view.terminal.run_command("ampy --port " + self.view.get_port_selected() + " run " + str(self.model.get_path_main_code()))
  
+
+    def upload(self, *args):
+        self.save()
+        self.save_main_code()
+
+        self.view.set_statusbar("Uploading Code..")
+        print("uploading on " + self.view.get_port_selected())
+        print(str(self.model.get_path_main_code()))
+        
+        self.view.terminal.run_command("ampy --port " + self.view.get_port_selected() + " put " + str(self.model.get_path_main_code()))       
+        
 
     def stop_run(self):
         print("stop running")

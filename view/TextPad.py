@@ -16,10 +16,10 @@ class TextLineNumbers(tk.Canvas):
         tk.Canvas.__init__(self, *args, **kwargs)
         self.textwidget = None
         self.fontSize = 12
-        self.configFont()
+        self.config_font()
 
 
-    def configFont(self):
+    def config_font(self):
         system = platform.system().lower()
         if system == "windows":
             self.font = font.Font(family='monospace', size=self.fontSize)
@@ -80,7 +80,7 @@ class TextPad(tk.Text):
         self.entry = None
         
         self.fontSize = 12
-        self.configFont()
+        self.config_font()
 
         self.config(insertbackground='#00FF00')
         # self.config(background='#000000')
@@ -90,18 +90,18 @@ class TextPad(tk.Text):
         self.bind('<Tab>', self.tab)
         self.bind('<BackSpace>', self.backtab)
         self.bind('<KeyRelease>', self.highlight, add='+')
-        self.bind('<KeyRelease>', self.correctThisLine, add='+')
+        self.bind('<KeyRelease>', self.correct_this_line, add='+')
         # self.bind('<KeyPress-Return>', self.getDoublePoint)
-        self.bind('<KeyRelease-Down>', self.correctLine)
-        self.bind('<KeyRelease-Up>', self.correctLineUp)
-        self.bind('<Key>', self.updateAutocompleteEntry, add='+')
+        self.bind('<KeyRelease-Down>', self.correct_line)
+        self.bind('<KeyRelease-Up>', self.correct_line_up)
+        self.bind('<Key>', self.update_auto_complete_entry, add='+')
         self.bind('<Control-x>', self.cut)
         self.bind('<Control-c>', self.copy)
         self.bind('<Control-v>', self.paste)
         self.bind('<space>', self.highlight)
         
         self.autocompleteList = []
-        self.SetAutoCompleteList()
+        self.set_auto_complete_list()
         #print(self.autocompleteList)
         self.charstring = ''
         self.list = []
@@ -111,11 +111,11 @@ class TextPad(tk.Text):
         
 
     
-    def updateAutoCompleteList(self, event=None):
+    def update_auto_complete_list(self, event=None):
         '''
             a simple algorithm for parsing the given text and filter important words
         '''
-        self.SetAutoCompleteList()
+        self.set_auto_complete_list()
             
         autocompleteList = []
         liste = []
@@ -159,7 +159,7 @@ class TextPad(tk.Text):
         return
     
     
-    def updateAutocompleteEntry(self, event=None):
+    def update_auto_complete_entry(self, event=None):
         '''
             make new list for the input from the user
         '''
@@ -252,7 +252,7 @@ class TextPad(tk.Text):
             return 'break'
 
 
-    def selectAll(self, event=None):
+    def select_all(self, event=None):
         self.tag_add('sel', '1.0', 'end')
     
     def indent(self, event=None):
@@ -267,7 +267,7 @@ class TextPad(tk.Text):
         index = self.index(tk.INSERT).split(".")
         line_no = int(index[0])
         pos = int(index[1])
-        self.updateAutoCompleteList()
+        self.update_auto_complete_list()
         if pos == 0:
             return
         line_text = self.get("%d.%d" % (line_no, 0),  "%d.end" % (line_no))
@@ -290,11 +290,11 @@ class TextPad(tk.Text):
         self.see(self.index(tk.INSERT)) 
         
         # on Return ends:
-        self.correctLine()
+        self.correct_line()
         
         return 'break'
     
-    def highlightThisLine(self, event=None):
+    def highlight_this_line(self, event=None):
 
         index = self.index('insert linestart')
         line = index.split('.')[0]
@@ -306,7 +306,7 @@ class TextPad(tk.Text):
             self.highlight(lineNumber=line)
 
     
-    def correctLine(self, event=None):
+    def correct_line(self, event=None):
         index = self.index(tk.INSERT).split(".")
         line = int(index[0])
         line -= 1
@@ -317,7 +317,7 @@ class TextPad(tk.Text):
         if line > 0:
             self.highlight(lineNumber=line)
 
-    def correctLineUp(self, event=None):
+    def correct_line_up(self, event=None):
         index = self.index(tk.INSERT).split(".")
         line = int(index[0])
         line += 1
@@ -328,7 +328,7 @@ class TextPad(tk.Text):
         if line > 0:
             self.highlight(lineNumber=line)
     
-    def correctThisLine(self, event=None):
+    def correct_this_line(self, event=None):
         ' to do   !!    -> event for <Key-Release>'
         key = event.keycode
         sym = event.keysym
@@ -352,7 +352,7 @@ class TextPad(tk.Text):
                 
         # paren ()
         if sym == 'parenleft':
-            x = self.isBalancedParen(line_text)
+            x = self.is_balanced_paren(line_text)
             if x == False:
                 z = line_text.rfind('(')
             else:
@@ -364,7 +364,7 @@ class TextPad(tk.Text):
                 self.tag_remove('parenHighlight', "%d.0"%(line), '%d.end'%(line))
         
         elif sym == 'parenright':
-            x = self.isBalancedParen(line_text)
+            x = self.is_balanced_paren(line_text)
             if x == False:
                 z = line_text.rfind(')')
             else:
@@ -377,7 +377,7 @@ class TextPad(tk.Text):
         
         # bracket []
         elif sym == 'bracketleft':
-            x = self.isBalancedBracket(line_text)
+            x = self.is_balanced_bracket(line_text)
             if x == False:
                 z = line_text.rfind('[')
             else:
@@ -389,7 +389,7 @@ class TextPad(tk.Text):
                 self.tag_remove('bracketHighlight', "%d.0"%(line), '%d.end'%(line))
         
         elif sym == 'bracketright':
-            x = self.isBalancedBracket(line_text)
+            x = self.is_balanced_bracket(line_text)
             if x == False:
                 z = line_text.rfind(']')
             else:
@@ -402,7 +402,7 @@ class TextPad(tk.Text):
         
         # brace {}
         elif sym == 'braceleft':
-            x = self.isBalancedBrace(line_text)
+            x = self.is_balanced_brace(line_text)
             if x == False:
                 z = line_text.rfind('{')
             else:
@@ -414,7 +414,7 @@ class TextPad(tk.Text):
                 self.tag_remove('braceHighlight', "%d.0"%(line), '%d.end'%(line))
         
         elif sym == 'braceright':
-            x = self.isBalancedBrace(line_text)
+            x = self.is_balanced_brace(line_text)
             if x == False:
                 z = line_text.rfind('}')
             else:
@@ -429,7 +429,7 @@ class TextPad(tk.Text):
         else:
             return
         
-    def isBalanced(self, txt):
+    def is_balanced(self, txt):
         braced = 0
         for ch in txt:
             if (ch == '(') or (ch == '[') or (ch == '{'): 
@@ -440,7 +440,7 @@ class TextPad(tk.Text):
         return braced == 0
 
 
-    def isBalancedParen(self, txt):
+    def is_balanced_paren(self, txt):
         braced = 0
         for ch in txt:
             if ch == '(': braced += 1
@@ -449,7 +449,7 @@ class TextPad(tk.Text):
                 if braced < 0: return False
         return braced == 0
 
-    def isBalancedBracket(self, txt):
+    def is_balanced_bracket(self, txt):
         braced = 0
         for ch in txt:
             if ch == '[': braced += 1
@@ -458,7 +458,7 @@ class TextPad(tk.Text):
                 if braced < 0: return False
         return braced == 0
 
-    def isBalancedBrace(self, txt):
+    def is_balanced_brace(self, txt):
         braced = 0
         for ch in txt:
             if ch == '{': braced += 1
@@ -507,9 +507,9 @@ class TextPad(tk.Text):
                     self.delete("insert-4c", "insert")
                     return 'break'
         
-        self.correctThisLine(event)
+        self.correct_this_line(event)
     
-    def highlightOpen(self, text):
+    def highlight_open(self, text):
         index = self.index(tk.INSERT).split(".")
         line_no = int(index[0])
         
@@ -525,7 +525,6 @@ class TextPad(tk.Text):
             for token, content in lex(line, PythonLexer()):
                 # Debug
                 #print(token)
-
                 self.tag_configure("Token.Name", foreground="#FFFFFF")
                 self.tag_configure("Token.Text", foreground="#FFFFFF")
 
@@ -540,30 +539,56 @@ class TextPad(tk.Text):
                 self.tag_configure("Token.Punctuation", foreground="#f92472")
 
                 self.tag_configure("Token.Name.Class", foreground="#a6e22c")
+                self.tag_configure("Token.Name.Constant", foreground="#f8f8f2")
+                self.tag_configure("Token.Name.Decorator", foreground="#67d8ef")
+                self.tag_configure("Token.Name.Entity", foreground="#a6e22c")
                 self.tag_configure("Token.Name.Exception", foreground="#67d8ef")
                 self.tag_configure("Token.Name.Function", foreground="#a6e22c")
                 self.tag_configure("Token.Name.Function.Magic", foreground="#67d8ef")
-                self.tag_configure("Token.Name.Decorator", foreground="#67d8ef")
-
-                        
+                self.tag_configure("Token.Name.Label", foreground="#a6e22c")
+                self.tag_configure("Token.Name.Namespace", foreground="#f8f8f2")
+                self.tag_configure("Token.Name.Other", foreground="#a6e22c")
+                self.tag_configure("Token.Name.Tag", foreground="#f92472")
+                self.tag_configure("Token.Name.Variable", foreground="#f92472")
+                self.tag_configure("Token.Name.Variable.Class", foreground="#a6e22c")
+                self.tag_configure("Token.Name.Variable.Global", foreground="#a6e22c")
+                self.tag_configure("Token.Name.Variable.Instance", foreground="#a6e22c")
+                self.tag_configure("Token.Name.Variable.Magic", foreground="#a6e22c")
+                            
+                self.tag_configure("Token.Name.Attribute", foreground="#a6e22c")
                 self.tag_configure("Token.Name.Builtin", foreground="#67d8ef")
                 self.tag_configure("Token.Name.Builtin.Pseudo", foreground="#fd9621")
-                        
-
+                            
                 self.tag_configure("Token.Operator.Word", foreground="#f92472")
                 self.tag_configure("Token.Operator", foreground="#f83535")
 
                 self.tag_configure("Token.Comment", foreground="#74705d")
+                self.tag_configure("Token.Comment.Hashbang", foreground="#74705d")
+                self.tag_configure("Token.Comment.Multiline", foreground="#74705d")
+                self.tag_configure("Token.Comment.Preproc", foreground="#74705d")
+                self.tag_configure("Token.Comment.Preprocfile", foreground="#74705d")
                 self.tag_configure("Token.Comment.Single", foreground="#74705d")
-                self.tag_configure("Token.Comment.Double", foreground="#74705d")
+                self.tag_configure("Token.Comment.Special", foreground="#74705d")
 
-                self.tag_configure("Token.Literal.Number.Integer", foreground="#ac80ff")
+                self.tag_configure("Token.Literal.Number.Bin", foreground="#ac80ff")
                 self.tag_configure("Token.Literal.Number.Float", foreground="#ac80ff")
-            # 
-                self.tag_configure("Token.Literal.String.Single", foreground="#e7db74")
+                self.tag_configure("Token.Literal.Number.Hex", foreground="#ac80ff")
+                self.tag_configure("Token.Literal.Number.Integer", foreground="#ac80ff")
+                self.tag_configure("Token.Literal.Number.Integer.Long", foreground="#ac80ff")
+                self.tag_configure("Token.Literal.Number.Oct", foreground="#ac80ff")
+                # 
+                self.tag_configure("Token.Literal.String.Affix", foreground="#e7db74")
+                self.tag_configure("Token.Literal.String.Char", foreground="#e7db74")
+                self.tag_configure("Token.Literal.String.Delimiter", foreground="#e7db74")
+                self.tag_configure("Token.Literal.String.Doc", foreground="#e7db74")
                 self.tag_configure("Token.Literal.String.Double", foreground="#e7db74")
-
-            
+                self.tag_configure("Token.Literal.String.Escape", foreground="#e7db74")
+                self.tag_configure("Token.Literal.String.Heredoc", foreground="#e7db74")
+                self.tag_configure("Token.Literal.String.Interpol", foreground="#e7db74")
+                self.tag_configure("Token.Literal.String.Other", foreground="#e7db74")
+                self.tag_configure("Token.Literal.String.Regex", foreground="#e7db74")
+                self.tag_configure("Token.Literal.String.Single", foreground="#e7db74")
+                self.tag_configure("Token.Literal.String.Symbol", foreground="#e7db74")
 
                 self.mark_set("range_end", "range_start + %dc" % len(content))
                 self.tag_add(str(token), "range_start", "range_end")
@@ -657,13 +682,11 @@ class TextPad(tk.Text):
             self.tag_configure("Token.Literal.String.Single", foreground="#e7db74")
             self.tag_configure("Token.Literal.String.Symbol", foreground="#e7db74")
 
-
-
             self.mark_set("range_end", "range_start + %dc" % len(content))
             self.tag_add(str(token), "range_start", "range_end")
             self.mark_set("range_start", "range_end")
     
-    def highlightAll(self, event=None):
+    def highlight_all(self, event=None):
         '''
             highlight whole document (when loading a file) ... this can taking a few seconds
             if the file is big ..... no better solution found
@@ -678,7 +701,7 @@ class TextPad(tk.Text):
             self.update()
             i += 1
 
-    def highlightAll2(self, linesInFile, overlord, event=None):
+    def highlight_all2(self, linesInFile, overlord, event=None):
         '''
             highlight whole document (when loading a file) ... this can taking a few seconds
             if the file is big ..... no better solution found
@@ -697,10 +720,10 @@ class TextPad(tk.Text):
 
 
     
-    def highlightAllOpen(self, code):
+    def highlight_all_open(self, code):
         pass
 
-    def configFont(self):
+    def config_font(self):
         '''
             set the font .... tested only in windows .. if you want to make it cross platform
         '''
@@ -712,7 +735,7 @@ class TextPad(tk.Text):
             self.font = font.Font(family='Mono', size=self.fontSize)
             self.configure(font=self.font)
 
-    def SetAutoCompleteList(self):
+    def set_auto_complete_list(self):
         '''
             basic autocompleteList with keywords and some important things (for me)
         '''

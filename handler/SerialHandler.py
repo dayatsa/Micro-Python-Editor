@@ -1,3 +1,5 @@
+from serial.tools.list_ports import comports
+
 
 class SerialHandler:
 
@@ -8,7 +10,7 @@ class SerialHandler:
         try:
             from serial.tools.list_ports import comports
         except ImportError():
-            return ["None"]
+            return ["NONE".ljust(20)]
             print("import error")
         
         if comports:
@@ -22,8 +24,8 @@ class SerialHandler:
                 elif port[2].startswith("USB VID:PID"):
                     port_has_ebb = True
                 if port_has_ebb:
-                    ebb_ports_list.append(port[0])
+                    ebb_ports_list.append(port[0].ljust(20))
             if len(ebb_ports_list) == 0:
-                return ['None']
+                return ['NONE'.ljust(20)]
             else:
                 return ebb_ports_list 

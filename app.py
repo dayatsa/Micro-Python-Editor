@@ -34,13 +34,14 @@ class App(tk.Tk):
                         template=template)
 
         # create a view and place it on the root window
-        view = CodeView(self)
+        path_example = os.path.join(path, "example")
+        view = CodeView(self, path_example)
 
         # create a controller
-        # controller = CodeController(model, view)
+        controller = CodeController(model, view)
 
         # set the controller to view
-        # view.set_controller(controller)
+        view.set_controller(controller)
 
 
 if __name__ == '__main__':
