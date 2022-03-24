@@ -1,4 +1,5 @@
 
+from cgitb import text
 import tkinter as tk
 from tkinter import Text, Button, PhotoImage, scrolledtext
 from pathlib import Path
@@ -51,11 +52,11 @@ class CodeView(tk.Frame):
         )
         self.canvas.pack(fill=tk.BOTH, expand=tk.YES)
 
-        self.canvas.create_text(
+        self.text_board_info = self.canvas.create_text(
             1102.0,
             699.0,
             anchor="nw",
-            text="Raspberry Pico on COM11",
+            text="Raspberry Pico",
             fill="#FFFFFF",
             font=("RobotoRoman Regular", 12 * -1)
         )
@@ -189,7 +190,10 @@ class CodeView(tk.Frame):
 
         # option list COM
         self.variable_com = tk.StringVar(self.root)
-        self.list_com = tk.OptionMenu(self.root, self.variable_com, *SerialHandler.get_list_ports())
+        self.list_com = tk.OptionMenu(
+            self.root, 
+            self.variable_com, 
+            *SerialHandler.get_list_ports())
         self.list_com.config(
             background="#535961",
             foreground="#FFFFFF",
@@ -374,6 +378,7 @@ class CodeView(tk.Frame):
     def get_port_selected(self):
         return self.variable_com.get().replace(" ", "")
 
+
     def reset_content_textarea(self):
         self.textarea.delete(1.0, tk.END)
 
@@ -390,6 +395,11 @@ class CodeView(tk.Frame):
     def button_stop_clicked(self):
         if self.controller:
             self.controller.stop_run()
+
+    
+    def option_menu_clicked(self, value):
+        self.variable_com.set(value)
+        self.canvas.itemconfig(self.text_board_info, text="Raspberry Pico on " + self.get_port_selected())
 
 
     def on_examplebar_clicked(self, path, name):

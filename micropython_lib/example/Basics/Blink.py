@@ -4,7 +4,7 @@ led = Pin(25, Pin.OUT)
 
 
 while True:
-    led.on()        # turn the LED on (HIGH is the voltage level)
+    led.on()        # turn the LED on 
     delay(1000)     # wait for a second
-    led.off()       # turn the LED off by making the voltage LOW
+    led.off()       # turn the LED off 
     delay(1000)     # wait for a second

@@ -12,6 +12,7 @@ class CodeController:
         self.model = model
         self.view = view
         self.new_file()
+        self.refresh()
 
 
     def new_file(self, *args):
@@ -89,9 +90,6 @@ class CodeController:
         self.view.set_statusbar("Running Code..")
         print("running on " + self.view.get_port_selected() + " port")
         print(str(self.model.get_path_main_code()))
-        # self.view.terminal.run_command("ampy --port " + self.view.variable_com.get() + " put " + str(self.model.get_path_main_code()))       
-        # print(self.view.terminal.get_output())
-        # time.sleep(0.1)
         self.view.terminal.clear()
         time.sleep(0.1)
         self.view.terminal.run_command("ampy --port " + self.view.get_port_selected() + " run " + str(self.model.get_path_main_code()))
@@ -104,7 +102,7 @@ class CodeController:
         self.view.set_statusbar("Uploading Code..")
         print("uploading on " + self.view.get_port_selected())
         print(str(self.model.get_path_main_code()))
-        
+        self.view.terminal.clear()
         self.view.terminal.run_command("ampy --port " + self.view.get_port_selected() + " put " + str(self.model.get_path_main_code()))       
         
 
@@ -122,7 +120,10 @@ class CodeController:
         menu.delete(0, "end")
         for string in self.option_list_com:
             menu.add_command(label=string, 
-                             command=lambda value=string: self.view.variable_com.set(value))
+                             command=lambda value=string: self.view.option_menu_clicked(value))
 
+    
+    def on_click_option_list(self, value):
+        print(value)
 
     
